@@ -1,0 +1,62 @@
+<div [formGroup]="addEmployeeFormGroup" class="mt-5 container border border-dark-subtle rounded">
+    <div class="row m-3">
+        <div class="offset-2 col-8">
+            <div>
+                <label class="fs-2 fw-bold mb-3">Add Employee</label>
+            </div>
+            <div>
+                <label class="fs-4 fw-bold my-3">First Name</label>
+                <input class="form-control" type="text" formControlName="firstName">
+                <label class="fs-4 fw-bold my-3">Last Name</label>
+                <input class="form-control" type="text" formControlName="lastName">
+                <label class="fs-4 fw-bold my-3">Role</label>
+                <input class="form-control" type="text" formControlName="role">
+            </div>
+            <div>
+                <button class="btn btn-success py-2 px-3 me-5 mt-3" (click)="submitEmployee()" [disabled]="addEmployeeFormGroup.invalid">
+                    <span class="fw-bold">
+                        Add
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-5 container">
+    <div class="row">
+        <div>
+            <label class="fs-2 fw-bold mb-3">Employee List - Bench</label>
+        </div>
+        <div class="col-3 border border-dark-subtle p-2">
+            <span class="fs-4 fw-bold py-3">First Name</span>
+        </div>
+        <div class="col-3 border border-dark-subtle p-2">
+            <span class="fs-4 fw-bold py-3">Last Name</span>
+        </div>
+        <div class="col-3 border border-dark-subtle p-2">
+            <span class="fs-4 fw-bold py-3">Role</span>
+        </div>
+        <div class="col-3 border border-dark-subtle p-2">
+            <span class="fs-4 fw-bold py-3">Action</span>
+        </div>
+        <ng-container *ngFor="let employee of employeeListBench; let i = index">
+            <div class="col-3 border border-dark-subtle p-2">
+                <span class="fs-5">{{employee?.firstName}}</span>
+            </div>
+            <div class="col-3 border border-dark-subtle p-2">
+                <span class="fs-5">{{employee?.lastName}}</span>
+            </div>
+            <div class="col-3 border border-dark-subtle p-2">
+                <span class="fs-5">{{employee?.role}}</span>
+            </div>
+            <div class="col-3 border border-dark-subtle p-2">
+                <button class="btn btn-danger py-2 px-3" (click)="removeEmployee(i)">
+                    <span class="fw-bold">
+                        Remove
+                    </span>
+                </button>
+            </div>
+        </ng-container>
+    </div>
+</div>

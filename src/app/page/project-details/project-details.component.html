@@ -1,0 +1,9 @@
+<div *ngIf="projectDetails.length > 0 && !isLoading">
+    <div [formGroup]="projectDetailsFormGroup" class="container">
+        <div formArrayName="projectDetails" class="row">
+            <div class="col-6 g-5" *ngFor="let project of projectDetails; let i = index">
+                <app-project [project]="project" [projectIndex]="i" [projectDetailsFormArray]="projectDetailsFormArray"></app-project>
+            </div>
+        </div>
+    </div>
+</div>
