@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -50,10 +49,6 @@ export class ProjectService {
 
   employeeCount: number = 0;
 
-  addToProject: BehaviorSubject<number> = new BehaviorSubject(-1);
-
-  removeFromProject: BehaviorSubject<number> = new BehaviorSubject(-1);
-
   constructor() { }
 
   getProjectDetails() {
@@ -64,31 +59,19 @@ export class ProjectService {
     this.projectDetails = projectDetails;
   }
 
-  setEmployeeToBench(employee: any) {
-    for (const project of this.projectDetails) {
-      this.employeeCount += project.employeeList.length;
+  setNewEmployeeToBench(employee: any) {
+    if (this.employeeCount == 0) {
+      for (const project of this.projectDetails) {
+        this.employeeCount += project.employeeList.length;
+      }
     }
     employee.id = this.employeeCount + 1;
     this.projectDetails[0].employeeList.push(employee);
   }
 
   removeEmployeeFromBench(index: number) {
-    this.projectDetails[0].employeeList.splice(index, 1)
+    this.projectDetails[0].employeeList.splice(index, 1);
+    this.employeeCount--;
   }
 
-  getAddToProject() {
-    return this.addToProject;
-  }
-
-  setAddToProject(projectIndex: number = -1) {
-    this.addToProject.next(projectIndex);
-  }
-
-  getRemoveFromProject() {
-    return this.removeFromProject;
-  }
-
-  setRemoveFromProject(projectIndex: number = -1) {
-    this.removeFromProject.next(projectIndex);
-  }
 }

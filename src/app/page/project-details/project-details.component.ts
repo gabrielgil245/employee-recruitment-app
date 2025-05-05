@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
 import { ProjectService } from 'src/app/service/project.service';
 
 @Component({
@@ -11,7 +10,7 @@ import { ProjectService } from 'src/app/service/project.service';
 export class ProjectDetailsComponent implements OnInit, OnDestroy {
 
   benchDetails: any[] = [];
-  
+
   projectDetails: any[] = [];
 
   addToProjectTitle: string = '';
@@ -22,23 +21,15 @@ export class ProjectDetailsComponent implements OnInit, OnDestroy {
 
   isLoading: boolean = false;
 
-  addToProjectSubscription$!: Subscription;
-
-  removeFromProjectSubscription$!: Subscription;
-  
   constructor(private fb: FormBuilder, private projectService: ProjectService) { }
 
   ngOnInit(): void {
     this.initiateProjectDetails();
     this.initiateProjectDetailsFormGroup();
     this.initializeProjectDetailsFormArray();
-    this.initiateAddToProjectSubscription();
-    this.initiateRemoveFromProjectSubscription();
   }
 
   ngOnDestroy(): void {
-    this.addToProjectSubscription$?.unsubscribe();
-    this.removeFromProjectSubscription$?.unsubscribe();
     this.projectService.setProjectDetails(this.projectDetails);
   }
 
@@ -54,7 +45,7 @@ export class ProjectDetailsComponent implements OnInit, OnDestroy {
 
   initializeProjectDetailsFormArray(): void {
     if (!this.projectDetails || !this.projectDetails?.length) return;
-    
+
     this.projectDetailsFormArray = this.projectDetailsFormGroup.get('projectDetails') as FormArray;
     for (const project of this.projectDetails) {
       const projectFormGroup: FormGroup = this.fb.group({
@@ -78,59 +69,42 @@ export class ProjectDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  initiateAddToProjectSubscription(): void {
-    this.addToProjectSubscription$ = this.projectService.getAddToProject().subscribe((projectIndex: number) => {
-      if (projectIndex == -1) return;
+  addToProject(projectIndex: number) {
+    if (projectIndex == -1) return;
 
-      this.isLoading = true;
-      const newEmployeeFormArray = this.projectDetailsFormArray?.at(projectIndex)?.get('employeeList') as FormArray;
-      for (let index = 0; index < this.projectDetailsFormArray?.value?.length; index++) {
-        if (projectIndex == index) continue;
-        
-        const employeeFormArray = this.projectDetailsFormArray?.at(index)?.get('employeeList') as FormArray;
-        for(let embeddedIndex = employeeFormArray?.value?.length - 1; embeddedIndex >= 0; embeddedIndex--) {
-          const employeeFormGroup = employeeFormArray?.at(embeddedIndex) as FormGroup;
-          if (employeeFormGroup?.get('isSelected')?.value) {
-            newEmployeeFormArray.push(employeeFormGroup);
-            employeeFormArray.removeAt(embeddedIndex);
-          }
-        }
-      }
-
-      const newProjectDetails = this.projectDetailsFormGroup?.getRawValue()?.projectDetails;
-      this.projectDetails = newProjectDetails;
-      this.initiateProjectDetailsFormGroup();
-      this.initializeProjectDetailsFormArray();
-      this.projectService.setAddToProject();
-      this.isLoading = false;
-    });
+    this.moveEmployeesBetweenProjects(false, projectIndex);
+    this.reinitializeProjectDetails();
   }
 
-  initiateRemoveFromProjectSubscription(): void {
-    this.removeFromProjectSubscription$ = this.projectService.getRemoveFromProject().subscribe((projectIndex: number) => {
-      if (projectIndex == -1) return;
+  removeFromProject(projectIndex: number) {
+    if (projectIndex == -1) return;
 
-      this.isLoading = true;
-      const benchEmployeeFormArray = this.projectDetailsFormArray?.at(0)?.get('employeeList') as FormArray; // bench defaulted as index 0
-      for (let index = 0; index < this.projectDetailsFormArray?.value?.length; index++) {
-        if (projectIndex != index) continue;
-        
-        const employeeFormArray = this.projectDetailsFormArray?.at(index)?.get('employeeList') as FormArray;
-        for(let embeddedIndex = employeeFormArray?.value?.length - 1; embeddedIndex >= 0; embeddedIndex--) {
-          const employeeFormGroup = employeeFormArray?.at(embeddedIndex) as FormGroup;
-          if (employeeFormGroup?.get('isSelected')?.value) {
-            benchEmployeeFormArray.push(employeeFormGroup);
-            employeeFormArray.removeAt(embeddedIndex);
-          }
+    this.moveEmployeesBetweenProjects(true, projectIndex);
+    this.reinitializeProjectDetails();
+  }
+
+  moveEmployeesBetweenProjects(isBenched: boolean, projectIndex: number) {
+    this.isLoading = true;
+    const newEmployeeFormArray = isBenched ? this.projectDetailsFormArray?.at(0)?.get('employeeList') as FormArray : this.projectDetailsFormArray?.at(projectIndex)?.get('employeeList') as FormArray;
+    for (let index = 0; index < this.projectDetailsFormArray?.value?.length; index++) {
+      if ((isBenched && projectIndex != index) || (!isBenched && projectIndex == index)) continue;
+
+      const previousEmployeeFormArray = this.projectDetailsFormArray?.at(index)?.get('employeeList') as FormArray;
+      for (let embeddedIndex = previousEmployeeFormArray?.value?.length - 1; embeddedIndex >= 0; embeddedIndex--) {
+        const employeeFormGroup = previousEmployeeFormArray?.at(embeddedIndex) as FormGroup;
+        if (employeeFormGroup?.get('isSelected')?.value) {
+          newEmployeeFormArray.push(employeeFormGroup);
+          previousEmployeeFormArray.removeAt(embeddedIndex);
         }
       }
+    }
+  }
 
-      const newProjectDetails = this.projectDetailsFormGroup?.getRawValue()?.projectDetails;
-      this.projectDetails = newProjectDetails;
-      this.initiateProjectDetailsFormGroup();
-      this.initializeProjectDetailsFormArray();
-      this.projectService.setRemoveFromProject();
-      this.isLoading = false;
-    });
+  reinitializeProjectDetails() {
+    const newProjectDetails = this.projectDetailsFormGroup?.getRawValue()?.projectDetails;
+    this.projectDetails = newProjectDetails;
+    this.initiateProjectDetailsFormGroup();
+    this.initializeProjectDetailsFormArray();
+    this.isLoading = false;
   }
 }

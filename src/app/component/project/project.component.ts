@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { ProjectService } from 'src/app/service/project.service';
 
@@ -14,6 +14,10 @@ export class ProjectComponent implements OnInit {
   @Input() projectIndex: number = -1;
 
   @Input() projectDetailsFormArray!: FormArray;
+
+  @Output() addToProjectEvent: EventEmitter<number> = new EventEmitter<number>();
+  
+  @Output() removeFromProjectEvent: EventEmitter<number> = new EventEmitter<number>();
 
   projectFormGroup!: FormGroup;
   
@@ -39,10 +43,10 @@ export class ProjectComponent implements OnInit {
   }
 
   addExternalEmployeesToProject() {
-    this.projectService.setAddToProject(this.projectIndex);
+    this.addToProjectEvent.emit(this.projectIndex);
   }
 
   removeEmployeesFromProject() {
-    this.projectService.setRemoveFromProject(this.projectIndex);
+    this.removeFromProjectEvent.emit(this.projectIndex);
   }
 }

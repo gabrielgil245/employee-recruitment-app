@@ -2,7 +2,7 @@
     <div [formGroup]="projectDetailsFormGroup" class="container">
         <div formArrayName="projectDetails" class="row">
             <div class="col-6 g-5" *ngFor="let project of projectDetails; let i = index">
-                <app-project [project]="project" [projectIndex]="i" [projectDetailsFormArray]="projectDetailsFormArray"></app-project>
+                <app-project [project]="project" [projectIndex]="i" [projectDetailsFormArray]="projectDetailsFormArray" (addToProjectEvent)="addToProject($event)" (removeFromProjectEvent)="removeFromProject($event)"></app-project>
             </div>
         </div>
     </div>

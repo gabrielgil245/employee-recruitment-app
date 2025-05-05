@@ -33,7 +33,7 @@ export class AddEmployeeComponent implements OnInit {
   }
 
   submitEmployee() {
-    this.projectService.setEmployeeToBench(this.addEmployeeFormGroup.getRawValue());
+    this.projectService.setNewEmployeeToBench(this.addEmployeeFormGroup.getRawValue());
     this.initiateAddEmployeeFormGroup();
   }
 
