@@ -59,19 +59,22 @@ export class ProjectService {
     this.projectDetails = projectDetails;
   }
 
-  setNewEmployeeToBench(employee: any) {
-    if (this.employeeCount == 0) {
-      for (const project of this.projectDetails) {
-        this.employeeCount += project.employeeList.length;
-      }
+  countEmployeeList() {
+    this.employeeCount = 0;
+    for (const project of this.projectDetails) {
+      this.employeeCount += project.employeeList.length;
     }
+  }
+
+  setNewEmployeeToBench(employee: any) {
+    this.countEmployeeList();
     employee.id = this.employeeCount + 1;
     this.projectDetails[0].employeeList.push(employee);
   }
 
   removeEmployeeFromBench(index: number) {
     this.projectDetails[0].employeeList.splice(index, 1);
-    this.employeeCount--;
+    this.countEmployeeList();
   }
 
 }
