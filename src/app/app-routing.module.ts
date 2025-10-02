@@ -1,12 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ProjectDetailsComponent } from './page/project-details/project-details.component';
-import { AddEmployeeComponent } from './page/add-employee/add-employee.component';
 
 const routes: Routes = [
   {path: '', redirectTo: '/add-employee', pathMatch: 'full'},
-  {path: 'project-details', component: ProjectDetailsComponent},
-  {path: 'add-employee', component: AddEmployeeComponent},
+  {path: 'add-employee', loadChildren: () => import('./modules/add-employee/add-employee.module').then(m => m.AddEmployeeModule)},
+  {path: 'project-details', loadChildren: () => import('./modules/project-details/project-details.module').then(m => m.ProjectDetailsModule)},
   {path: '**', redirectTo: '/add-employee', pathMatch: 'full'}
 ];
 

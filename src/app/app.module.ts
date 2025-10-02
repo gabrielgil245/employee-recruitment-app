@@ -3,25 +3,16 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HeaderComponent } from './component/header/header.component';
-import { ProjectComponent } from './component/project/project.component';
-import { ProjectDetailsComponent } from './page/project-details/project-details.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AddEmployeeComponent } from './page/add-employee/add-employee.component';
+import { HeaderComponent } from './shared/components/header/header.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HeaderComponent,
-    ProjectComponent,
-    ProjectDetailsComponent,
-    AddEmployeeComponent
+    HeaderComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
-    ReactiveFormsModule,
-    FormsModule
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]

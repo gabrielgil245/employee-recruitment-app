@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
-import { ProjectService } from 'src/app/service/project.service';
 
 @Component({
   selector: 'app-project',
@@ -23,7 +22,7 @@ export class ProjectComponent implements OnInit {
   
   employeeFormArray!: FormArray;
   
-  constructor(private projectService: ProjectService) { }
+  constructor() { }
   
   ngOnInit(): void {
     this.initiateProjectFormGroup();
